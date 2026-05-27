@@ -5,12 +5,15 @@ app = Flask(__name__)
 
 
 def fetch_post_by_id(post_id):
+    """Fetch a single post by its ID from the JSON file."""
     with open('data.json', 'r') as f:
         blog_posts = json.load(f)
     return next((p for p in blog_posts if p['id'] == post_id), None)
 
+
 @app.route('/')
 def index():
+    """Display all blog posts."""
     with open('data.json', 'r') as f:
         blog_posts = json.load(f)
     return render_template('index.html', posts=blog_posts)
@@ -18,6 +21,7 @@ def index():
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
+    """Add a new blog post."""
     if request.method == 'POST':
         title = request.form.get('title')
         author = request.form.get('author')
@@ -45,6 +49,7 @@ def add():
 
 @app.route('/delete/<int:post_id>')
 def delete(post_id):
+    """Delete a blog post by its ID."""
     with open('data.json', 'r') as f:
         blog_posts = json.load(f)
 
@@ -58,6 +63,7 @@ def delete(post_id):
 
 @app.route('/update/<int:post_id>', methods=['GET', 'POST'])
 def update(post_id):
+    """Update an existing blog post."""
     post = fetch_post_by_id(post_id)
     if post is None:
         return "Post not found", 404
@@ -78,6 +84,7 @@ def update(post_id):
         return redirect(url_for('index'))
 
     return render_template('update.html', post=post)
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5050, debug=True)
