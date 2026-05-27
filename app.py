@@ -61,6 +61,22 @@ def delete(post_id):
     return redirect(url_for('index'))
 
 
+@app.route('/like/<int:post_id>')
+def like(post_id):
+    """Increment the like count of a blog post."""
+    with open('data.json', 'r') as f:
+        blog_posts = json.load(f)
+
+    for p in blog_posts:
+        if p['id'] == post_id:
+            p['likes'] += 1
+
+    with open('data.json', 'w') as f:
+        json.dump(blog_posts, f)
+
+    return redirect(url_for('index'))
+
+
 @app.route('/update/<int:post_id>', methods=['GET', 'POST'])
 def update(post_id):
     """Update an existing blog post."""
